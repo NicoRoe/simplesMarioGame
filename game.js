@@ -2,7 +2,7 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 const gravity = 0.5; // Schwerkraft, die auf den Spieler wirkt
-const enemySpawnInterval = 2000; // Zeitintervall (in Millisekunden) für das Spawnen neuer Gegner
+const enemySpawnInterval = 3000; // Zeitintervall (in Millisekunden) für das Spawnen neuer Gegner
 let score = 0; // Variable für den Score
 
 // Funktion zum Setzen der Canvas-Größe
@@ -17,18 +17,25 @@ resizeCanvas(); // Initiale Größenanpassung
 // Bilder laden und überprüfen, ob alle Bilder geladen sind
 const backgroundImage = new Image();
 const cloud = new Image();
+
 const playerImageRight = new Image();
 const playerImageLeft = new Image();
+
 const enemyImage = new Image();
+const enemyImageRight = new Image();
+
+const enemyImageLvlUp = new Image();
+
+const enemyImageLvlUp2 = new Image();
 
 let imagesLoaded = 0;
-const totalImages = 5; // Hintergrund, Spieler (rechts, links), Wolke, Gegner
+const totalImages = 7 ; // Hintergrund, Spieler (rechts, links), Wolke, Gegner usw.
 
 function checkAllImagesLoaded() {
   imagesLoaded++;
-  console.log(`Images loaded: ${imagesLoaded}/${totalImages}`);
+                                    console.log(`Images loaded: ${imagesLoaded}/${totalImages}`);
   if (imagesLoaded === totalImages) {
-    console.log("All images loaded, starting animation.");
+                                    console.log("All images loaded, starting animation.");
     animate(); // Startet die Animation, wenn alle Bilder geladen sind
   }
 }
@@ -52,10 +59,22 @@ playerImageLeft.onload = checkAllImagesLoaded;
 enemyImage.src = 'assets/images/gumbaBig.png';
 enemyImage.onload = checkAllImagesLoaded;
 
+//---------------------------- strong Enemies -----------------------------------
+
+enemyImageLvlUp.src = 'assets/images/green.png';
+enemyImageLvlUp.onload = checkAllImagesLoaded;
+
+//---------------------------- strong Enemies -----------------------------------
+
+enemyImageLvlUp2.src = 'assets/images/red.png';
+enemyImageLvlUp2.onload = checkAllImagesLoaded;
+
+// ----------------------------- stage Höhe -------------------------------------
+
 // Neue Bodenhöhe definieren
 const groundLevel = canvas.height - 40;
 
-// Spieler-Objekt
+// -------------------------- Spieler-Objekt ------------------------------------
 const player = {
   x: 100,
   y: groundLevel - 90,
@@ -69,7 +88,7 @@ const player = {
   jumpCount: 0,
   maxJumps: 2,
   facingRight: true,
-  lives: 3, // Anzahl der Leben des Spielers
+  lives: 30, // Anzahl der Leben des Spielers
   draw() {
     const image = this.facingRight ? playerImageRight : playerImageLeft;
     ctx.drawImage(image, this.x, this.y, this.width, this.height);
@@ -94,11 +113,11 @@ const player = {
   checkCollisionWithEnemy(enemy) {
     // Prüfe auf Kollision mit einem Gegner
     if (this.x < enemy.x + enemy.width &&
-        this.x + this.width > enemy.x &&
-        this.y < enemy.y + enemy.height &&
-        this.y + this.height > enemy.y) {
+      this.x + this.width > enemy.x &&
+      this.y < enemy.y + enemy.height &&
+      this.y + this.height > enemy.y) {
 
-      if (this.y + this.height - this.velocityY <= enemy.y + 10) { 
+      if (this.y + this.height - this.velocityY <= enemy.y + 10) {
         // Spieler springt auf den Gegner (von oben)
         console.log('Gegner besiegt!');
         this.velocityY = player.jumpPower;
@@ -121,10 +140,13 @@ const player = {
   }
 };
 
-// Gegner-Objekte dynamisch verwalten
-let enemies = [];
+// --------------------------- Gegner-Objekte ----------------------------------- 
 
-// Funktion zum Spawnen neuer Gegner
+let enemies = [];
+let strongEnemies =[];
+
+// --------------------------- Spawnen neuer Gegner ------------------------------
+
 function spawnEnemy() {
   const spawnSide = Math.random() < 0.5 ? 'left' : 'right';
   const enemy = {
@@ -138,8 +160,38 @@ function spawnEnemy() {
   enemies.push(enemy);
 }
 
+function spawnStrongEnemy() {
+  const spawnSide = Math.random() < 0.3 ? 'left' : 'right';
+  const enemy = {
+    x: spawnSide === 'left' ? 0 : canvas.width,
+    y: groundLevel - 40,
+    width: 50,
+    height: 40,
+    velocityX: spawnSide === 'left' ? 2 : -2,
+    image: enemyImageLvlUp
+  };
+  strongEnemies.push(enemy);
+}
+
+function spawnStrongerEnemy() {
+  const spawnSide = Math.random() < 0.5 ? 'left' : 'right';
+  const enemy = {
+    x: spawnSide === 'left' ? 0 : canvas.width,
+    y: groundLevel - 40,
+    width: 50,
+    height: 40,
+    velocityX: spawnSide === 'left' ? 2 : -2,
+    image: enemyImageLvlUp2
+  };
+  enemies.push(enemy);
+}
+
 // Startet das kontinuierliche Spawnen der Gegner
 let enemySpawner = setInterval(spawnEnemy, enemySpawnInterval);
+
+let enemySpawner2 = setInterval(spawnStrongEnemy, enemySpawnInterval);
+
+let enemySpawner3 = setInterval(spawnStrongerEnemy, enemySpawnInterval);
 
 // Funktion zum Entfernen eines Gegners
 function removeEnemy(enemy) {
@@ -147,13 +199,15 @@ function removeEnemy(enemy) {
 }
 
 // Funktion zur Anzeige des Game Over-Bildschirms
-function gameOver() {    
+
+function gameOver() {
   alert('Game Over! Score: ' + score); // Zeige den endgültigen Score an
   clearInterval(enemySpawner); // Stoppe das Spawnen neuer Gegner
   resetGame(); // Setze das Spiel zurück
 }
 
 // Funktion, um das Spiel zurückzusetzen
+
 function resetGame() {
   // Setze Spielerposition und Parameter zurück
   player.x = 100;
@@ -164,21 +218,24 @@ function resetGame() {
   player.isJumping = false;
   player.jumpCount = 0;
   player.facingRight = true;
-  
+
   score = 0; // Setze den Score zurück
 
   // Entferne alle Gegner
   enemies = [];
+  strongEnemies = [];
 
   // Starte den Gegner-Spawner neu
   enemySpawner = setInterval(spawnEnemy, enemySpawnInterval);
 }
 
-// Tastatureingaben
+//  ------------------------------------------- Tastatureingaben -----------------------------------------------------------//
 const keys = {
   left: false,
   right: false,
-  up: false
+  up: false,
+  a: false,
+  d: false,
 };
 
 document.addEventListener('keydown', (e) => {
@@ -215,10 +272,12 @@ function update() {
     if (enemy.x + enemy.width < 0 || enemy.x > canvas.width) {
       removeEnemy(enemy);
     }
-    
+
     player.checkCollisionWithEnemy(enemy);
   });
 }
+
+// ------------------------------------- draw function -------------------------
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -238,7 +297,7 @@ function draw() {
 
   player.draw();
 
-  // Zeichne den Lebenszähler
+  // ---------------------------- Lebenszähler ----------------------------------------
   ctx.fillStyle = 'white';
   ctx.font = '20px Arial';
   ctx.fillText('Leben: ' + player.lives, 20, 30);
