@@ -90,7 +90,7 @@ const player = {
   jumpCount: 0,
   maxJumps: 2,
   facingRight: true,
-  lives: 3000, // Anzahl der Leben des Spielers
+  lives: 300, // Anzahl der Leben des Spielers
 
   draw() {
     const image = this.facingRight ? playerImageRight : playerImageLeft;
@@ -228,8 +228,8 @@ function resetGame() {
 
   // Entferne alle Gegner
   enemies = [];
-  strongEnemies = [];
-  strongerEnemies = [];
+  /*   strongEnemies = [];
+    strongerEnemies = []; */
 
   // Starte den Gegner-Spawner neu
   enemySpawner = setInterval(spawnEnemy, enemySpawnInterval);
@@ -237,7 +237,8 @@ function resetGame() {
   enemySpawner3 = setInterval(spawnEnemy, enemySpawnInterval);
 }
 
-//  ------------------------------------------- Tastatureingaben -----------------------------------------------------------//
+//  ------------------------------------------- Controls -----------------------------------------------------------//
+
 const keys = {
   left: false,
   right: false,
@@ -246,7 +247,23 @@ const keys = {
   d: false,
 };
 
-document.addEventListener('keydown', (e) => {
+document.addEventListener('keydown', (event) => {
+  console.log(`Key pressed: ${event.code}`);
+  if (event.code === 'KeyA') {
+    player.x -= 20
+    player.facingRight = false;
+  } if (event.code === 'KeyD') {
+    player.x += 20
+    player.facingRight = true;
+  }
+  if (event.code === 'Space') {
+    player.velocityY = player.jumpPower;
+    player.isJumping = true;
+    player.jumpCount++;
+  }
+});
+
+/* document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') {
     keys.left = true;
     player.facingRight = false;
@@ -255,7 +272,7 @@ document.addEventListener('keydown', (e) => {
     keys.right = true;
     player.facingRight = true;
   }
-  if ((e.key === 'ArrowUp' || e.key === ' ') && player.jumpCount < player.maxJumps) {
+  if ((e.key === 'ArrowUp' || e.key === 'Space') && player.jumpCount < player.maxJumps) {
     player.velocityY = player.jumpPower;
     player.isJumping = true;
     player.jumpCount++;
@@ -265,12 +282,12 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('keyup', (e) => {
   if (e.key === 'ArrowLeft') keys.left = false;
   if (e.key === 'ArrowRight') keys.right = false;
-});
+}); */
 
 function update() {
   player.velocityX = 0;
-  if (keys.left) player.velocityX = -player.speed;
-  if (keys.right) player.velocityX = player.speed;
+  if (keys.a) player.velocityX = -player.speed;
+  if (keys.d) player.velocityX = player.speed;
 
   player.update();
 
@@ -309,10 +326,10 @@ function draw() {
   ctx.fillStyle = 'black';
   ctx.font = '40px Arial';
   ctx.textAlign = 'center'; // Set the text alignment to center
-  ctx.fillText('Leben: ' + player.lives, canvas.width / 2, 30); // Draw the text at the center of the canvas
+  ctx.fillText('Leben: ' + player.lives, canvas.width / 2, 40); // Draw the text at the center of the canvas
 
   // ---------------------------------- Zeichne den Score ------------------------------------
-  ctx.fillText('Score: ' + score, canvas.width / 2, 80); // Draw the text at the center of the canvas with a gap of 50 pixels
+  ctx.fillText('Score: ' + score, canvas.width / 2, 90); // Draw the text at the center of the canvas with a gap of 50 pixels
 }
 
 function animate() {
