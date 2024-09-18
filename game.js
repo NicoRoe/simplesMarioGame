@@ -75,6 +75,7 @@ enemyImageLvlUp2.onload = checkAllImagesLoaded;
 const groundLevel = canvas.height - 40;
 
 // -------------------------- Spieler-Objekt ------------------------------------
+
 const player = {
   x: 100,
   y: groundLevel - 90,
@@ -89,6 +90,7 @@ const player = {
   maxJumps: 2,
   facingRight: true,
   lives: 30, // Anzahl der Leben des Spielers
+
   draw() {
     const image = this.facingRight ? playerImageRight : playerImageLeft;
     ctx.drawImage(image, this.x, this.y, this.width, this.height);
@@ -143,7 +145,8 @@ const player = {
 // --------------------------- Gegner-Objekte ----------------------------------- 
 
 let enemies = [];
-let strongEnemies =[];
+let greenEnemies =[];
+let redEnemies = [];
 
 // --------------------------- Spawnen neuer Gegner ------------------------------
 
@@ -170,11 +173,11 @@ function spawnStrongEnemy() {
     velocityX: spawnSide === 'left' ? 2 : -2,
     image: enemyImageLvlUp
   };
-  strongEnemies.push(enemy);
+  greenEnemies.push(enemy);
 }
 
 function spawnStrongerEnemy() {
-  const spawnSide = Math.random() < 0.5 ? 'left' : 'right';
+  const spawnSide = Math.random() < 0.2 ? 'left' : 'right';
   const enemy = {
     x: spawnSide === 'left' ? 0 : canvas.width,
     y: groundLevel - 40,
@@ -206,10 +209,11 @@ function gameOver() {
   resetGame(); // Setze das Spiel zurück
 }
 
-// Funktion, um das Spiel zurückzusetzen
+// --------------------------------------------------- Spiel reset -----------------------------------------------
 
 function resetGame() {
   // Setze Spielerposition und Parameter zurück
+  
   player.x = 100;
   player.y = groundLevel - 90;
   player.velocityX = 0;
@@ -224,9 +228,12 @@ function resetGame() {
   // Entferne alle Gegner
   enemies = [];
   strongEnemies = [];
+  strongerEnemies = [];
 
   // Starte den Gegner-Spawner neu
   enemySpawner = setInterval(spawnEnemy, enemySpawnInterval);
+  enemySpawner2 = setInterval(spawnEnemy, enemySpawnInterval);
+  enemySpawner3 = setInterval(spawnEnemy, enemySpawnInterval);
 }
 
 //  ------------------------------------------- Tastatureingaben -----------------------------------------------------------//
