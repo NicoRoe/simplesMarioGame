@@ -24,18 +24,18 @@ const playerImageLeft = new Image();
 const enemyImage = new Image();
 const enemyImageRight = new Image();
 
-const enemyImageLvlUp = new Image();
+const enemyImage2 = new Image();
 
-const enemyImageLvlUp2 = new Image();
+const enemyImage3 = new Image();
 
 let imagesLoaded = 0;
-const totalImages = 7 ; // Hintergrund, Spieler (rechts, links), Wolke, Gegner usw.
+const totalImages = 7; // Hintergrund, Spieler (rechts, links), Wolke, Gegner usw.
 
 function checkAllImagesLoaded() {
   imagesLoaded++;
-                                    console.log(`Images loaded: ${imagesLoaded}/${totalImages}`);
+  console.log(`Images loaded: ${imagesLoaded}/${totalImages}`);
   if (imagesLoaded === totalImages) {
-                                    console.log("All images loaded, starting animation.");
+    console.log("All images loaded, starting animation.");
     animate(); // Startet die Animation, wenn alle Bilder geladen sind
   }
 }
@@ -55,19 +55,20 @@ playerImageRight.onload = checkAllImagesLoaded;
 playerImageLeft.src = 'assets/images/reverseMarioBig.png';
 playerImageLeft.onload = checkAllImagesLoaded;
 
-// Gegnerbild laden
+// --------------------------------------- Gegnerbild laden --------------------------
+
 enemyImage.src = 'assets/images/gumbaBig.png';
 enemyImage.onload = checkAllImagesLoaded;
 
 //---------------------------- strong Enemies -----------------------------------
 
-enemyImageLvlUp.src = 'assets/images/green.png';
-enemyImageLvlUp.onload = checkAllImagesLoaded;
+enemyImage2.src = 'assets/images/green.png';
+enemyImage2.onload = checkAllImagesLoaded;
 
 //---------------------------- strong Enemies -----------------------------------
 
-enemyImageLvlUp2.src = 'assets/images/red.png';
-enemyImageLvlUp2.onload = checkAllImagesLoaded;
+enemyImage3.src = 'assets/images/red.png';
+enemyImage3.onload = checkAllImagesLoaded;
 
 // ----------------------------- stage Höhe -------------------------------------
 
@@ -89,7 +90,7 @@ const player = {
   jumpCount: 0,
   maxJumps: 2,
   facingRight: true,
-  lives: 30, // Anzahl der Leben des Spielers
+  lives: 3000, // Anzahl der Leben des Spielers
 
   draw() {
     const image = this.facingRight ? playerImageRight : playerImageLeft;
@@ -144,9 +145,9 @@ const player = {
 
 // --------------------------- Gegner-Objekte ----------------------------------- 
 
-let enemies = [];
-let greenEnemies =[];
-let redEnemies = [];
+const enemies = [];
+const greenEnemies = [];
+const redEnemies = [];
 
 // --------------------------- Spawnen neuer Gegner ------------------------------
 
@@ -164,16 +165,16 @@ function spawnEnemy() {
 }
 
 function spawnStrongEnemy() {
-  const spawnSide = Math.random() < 0.3 ? 'left' : 'right';
+  const spawnSide = Math.random() < 0.4 ? 'left' : 'right';
   const enemy = {
     x: spawnSide === 'left' ? 0 : canvas.width,
     y: groundLevel - 40,
-    width: 50,
-    height: 40,
-    velocityX: spawnSide === 'left' ? 2 : -2,
-    image: enemyImageLvlUp
+    width: 55,
+    height: 45,
+    velocityX: spawnSide === 'left' ? 2 : -3,
+    image: enemyImage2
   };
-  greenEnemies.push(enemy);
+  enemies.push(enemy);
 }
 
 function spawnStrongerEnemy() {
@@ -181,10 +182,10 @@ function spawnStrongerEnemy() {
   const enemy = {
     x: spawnSide === 'left' ? 0 : canvas.width,
     y: groundLevel - 40,
-    width: 50,
-    height: 40,
-    velocityX: spawnSide === 'left' ? 2 : -2,
-    image: enemyImageLvlUp2
+    width: 60,
+    height: 50,
+    velocityX: spawnSide === 'left' ? 2 : -4,
+    image: enemyImage3
   };
   enemies.push(enemy);
 }
@@ -213,12 +214,12 @@ function gameOver() {
 
 function resetGame() {
   // Setze Spielerposition und Parameter zurück
-  
+
   player.x = 100;
   player.y = groundLevel - 90;
   player.velocityX = 0;
   player.velocityY = 0;
-  player.lives = 3;
+  player.lives = 30;
   player.isJumping = false;
   player.jumpCount = 0;
   player.facingRight = true;
@@ -304,13 +305,14 @@ function draw() {
 
   player.draw();
 
-  // ---------------------------- Lebenszähler ----------------------------------------
-  ctx.fillStyle = 'white';
-  ctx.font = '20px Arial';
-  ctx.fillText('Leben: ' + player.lives, 20, 30);
+  // ----------------------------------- Lebenszähler ----------------------------------------
+  ctx.fillStyle = 'black';
+  ctx.font = '40px Arial';
+  ctx.textAlign = 'center'; // Set the text alignment to center
+  ctx.fillText('Leben: ' + player.lives, canvas.width / 2, 30); // Draw the text at the center of the canvas
 
-  // Zeichne den Score
-  ctx.fillText('Score: ' + score, canvas.width - 100, 30);
+  // ---------------------------------- Zeichne den Score ------------------------------------
+  ctx.fillText('Score: ' + score, canvas.width / 2, 80); // Draw the text at the center of the canvas with a gap of 50 pixels
 }
 
 function animate() {
