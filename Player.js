@@ -17,7 +17,7 @@ export default class Player {
         this.jumpCount = 0;
         this.maxJumps = 2;
         this.facingRight = true;
-        this.lives = 1; // Anzahl der Leben des Spielers
+        this.lives = 1000; // Anzahl der Leben des Spielers
         this.gravity = 0.5;
         this.playerImageRight = playerImageRight;
         this.playerImageLeft = playerImageLeft;
@@ -49,8 +49,8 @@ export default class Player {
     };
     checkCollisionWithEnemy(enemy) {
         // Prüfe auf Kollision mit einem Gegner
-        console.log(this.x);
-        console.log(enemy.x);
+/*         console.log(this.x);
+        console.log(enemy.x); */
         if (this.x < enemy.x + enemy.width &&
             this.x + this.width > enemy.x &&
             this.y < enemy.y + enemy.height &&

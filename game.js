@@ -23,16 +23,7 @@ resizeCanvas(); // Initiale Größenanpassung
 const backgroundImage = new Image();
 const cloud = new Image();
 
-const playerImageRight = new Image();
-const playerImageLeft = new Image();
-
-const enemyImage = new Image();
-const enemyImageRight = new Image();
-
-const enemyImage2 = new Image();
-
-const enemyImage3 = new Image();
-
+// Bilder laden und überprüfen, ob alle Bilder geladen sind
 let imagesLoaded = 0;
 const totalImages = 7; // Hintergrund, Spieler (rechts, links), Wolke, Gegner usw.
 
@@ -40,7 +31,7 @@ function checkAllImagesLoaded() {
   imagesLoaded++;
   console.log(`Images loaded: ${imagesLoaded}/${totalImages}`);
   if (imagesLoaded === totalImages) {
-    console.log("All images loaded, starting animation.");
+    console.log("All images loaded, starting animation...");
     animate(); // Startet die Animation, wenn alle Bilder geladen sind
   }
 }
@@ -54,29 +45,38 @@ cloud.src = 'assets/images/wolke.png';
 cloud.onload = checkAllImagesLoaded;
 
 // Spielerbilder laden
+const playerImageRight = new Image();
+const playerImageLeft = new Image();
+
 playerImageRight.src = 'assets/images/marioBig.png';
 playerImageRight.onload = checkAllImagesLoaded;
-
 
 playerImageLeft.src = 'assets/images/reverseMarioBig.png';
 playerImageLeft.onload = checkAllImagesLoaded;
 
-// --------------------------------------- Gegnerbild laden --------------------------
+// ------------------------- Gegnerbild laden -----------------------------------
+
+const enemyImage = new Image();
+const enemyImageRight = new Image();
 
 enemyImage.src = 'assets/images/gumbaBig.png';
 enemyImage.onload = checkAllImagesLoaded;
 
 //---------------------------- strong Enemies -----------------------------------
 
+const enemyImage2 = new Image();
+
 enemyImage2.src = 'assets/images/green.png';
 enemyImage2.onload = checkAllImagesLoaded;
 
 //---------------------------- strong Enemies -----------------------------------
 
+const enemyImage3 = new Image();
+
 enemyImage3.src = 'assets/images/red.png';
 enemyImage3.onload = checkAllImagesLoaded;
 
-// ----------------Player
+// -------------------------------- PLAYER 1 --------------------------------------
 
 const player1 = new Player(canvas, playerImageRight, playerImageLeft)
 
@@ -211,7 +211,7 @@ function removeEnemy(enemy) {
   enemies.splice(enemies.indexOf(enemy), 1);
 }
 
-// Funktion zur Anzeige des Game Over-Bildschirms
+// ----------------------------------- GAME-OVER -----------------------------------------------
 
 function gameOver() {
   alert('Game Over! Score: ' + player1.score); // Zeige den endgültigen Score an
@@ -219,7 +219,7 @@ function gameOver() {
   resetGame(); // Setze das Spiel zurück
 }
 
-// --------------------------------------------------- Spiel reset -----------------------------------------------
+// ------------------------------------- SPIEL-RESET -----------------------------------------------
 
 function resetGame() {
   // Setze Spielerposition und Parameter zurück
@@ -233,7 +233,7 @@ function resetGame() {
   player1.jumpCount = 0;
   player1.facingRight = true;
 
-  player1.score = 0; // Setze den Score zurück
+  player1.score = 1000; // Setze den Score zurück
 
   // Entferne alle Gegner
   enemies = [];
@@ -246,23 +246,23 @@ function resetGame() {
   enemySpawner3 = setInterval(spawnEnemy, enemySpawnInterval);
 }
 
-//  ------------------------------------------- Controls -----------------------------------------------------------//
+//  ------------------------------------------- CONTROLS -----------------------------------------------------------//
 
 const keys = {
-  left: false,
-  right: false,
+  /*   left: false,
+    right: false, */
   up: false,
   a: false,
   d: false,
 };
 
 document.addEventListener('keydown', (event) => {
-  console.log(`Key pressed: ${event.code}`);
   if (event.code === 'KeyA') {
-    player1.x -= 20
+    keys.a = true; // Set keys.a to true when 'A' is pressed
     player1.facingRight = false;
-  } if (event.code === 'KeyD') {
-    player1.x += 20
+  }
+  if (event.code === 'KeyD') {
+    keys.d = true; // Set keys.d to true when 'D' is pressed
     player1.facingRight = true;
   }
   if (event.code === 'Space') {
@@ -273,11 +273,23 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.addEventListener('keyup', (event) => {
-  if ((event.code === "KeyA")) {
-    keys.a = false;
+  {
+    if ((event.code === "KeyA")) {
+      keys.a = false;
 
+    }
+    keys.a = false; // Set keys.a to false when 'A' is released
+    if (event.code === "KeyD") {
+      keys.d = false;
+
+    }
+    if (event.code === 'KeyD') {
+      keys.d = false; // Set keys.d to false when 'D' is released
+    }
   }
-})
+});
+
+//---------------------------------------------------------------------
 
 /* document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') {
