@@ -1,9 +1,11 @@
+import Player from "./Player.js";
+
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-const gravity = 0.5; // Schwerkraft, die auf den Spieler wirkt
+
 const enemySpawnInterval = 3000; // Zeitintervall (in Millisekunden) für das Spawnen neuer Gegner
-let score = 0; // Variable für den Score
+
 
 // Funktion zum Setzen der Canvas-Größe
 function resizeCanvas() {
@@ -13,6 +15,9 @@ function resizeCanvas() {
 
 window.addEventListener('resize', resizeCanvas); // Setzt Canvas-Größe bei Größenänderung des Fensters
 resizeCanvas(); // Initiale Größenanpassung
+
+
+
 
 // Bilder laden und überprüfen, ob alle Bilder geladen sind
 const backgroundImage = new Image();
@@ -52,6 +57,7 @@ cloud.onload = checkAllImagesLoaded;
 playerImageRight.src = 'assets/images/marioBig.png';
 playerImageRight.onload = checkAllImagesLoaded;
 
+
 playerImageLeft.src = 'assets/images/reverseMarioBig.png';
 playerImageLeft.onload = checkAllImagesLoaded;
 
@@ -70,14 +76,17 @@ enemyImage2.onload = checkAllImagesLoaded;
 enemyImage3.src = 'assets/images/red.png';
 enemyImage3.onload = checkAllImagesLoaded;
 
-// ----------------------------- stage Höhe -------------------------------------
+// ----------------Player
 
-// Neue Bodenhöhe definieren
-const groundLevel = canvas.height - 40;
+const player1 = new Player(canvas, playerImageRight, playerImageLeft)
+
+
 
 // -------------------------- Spieler-Objekt ------------------------------------
 
-const player = {
+
+
+/* const player1 = {
   x: 100,
   y: groundLevel - 90,
   width: 60,
@@ -93,7 +102,7 @@ const player = {
   lives: 300, // Anzahl der Leben des Spielers
 
   draw() {
-    const image = this.facingRight ? playerImageRight : playerImageLeft;
+    const image = this.facingRight ? player1ImageRight : player1ImageLeft;
     ctx.drawImage(image, this.x, this.y, this.width, this.height);
   },
   update() {
@@ -123,7 +132,7 @@ const player = {
       if (this.y + this.height - this.velocityY <= enemy.y + 10) {
         // Spieler springt auf den Gegner (von oben)
         console.log('Gegner besiegt!');
-        this.velocityY = player.jumpPower;
+        this.velocityY = player1.jumpPower;
         removeEnemy(enemy);
         score++; // Erhöhe den Score um 1, wenn ein Gegner besiegt wird
       } else {
@@ -141,13 +150,13 @@ const player = {
       }
     }
   }
-};
+}; */
 
 // --------------------------- Gegner-Objekte ----------------------------------- 
 
-const enemies = [];
-const greenEnemies = [];
-const redEnemies = [];
+let enemies = [];
+let greenEnemies = [];
+let redEnemies = [];
 
 // --------------------------- Spawnen neuer Gegner ------------------------------
 
@@ -155,7 +164,7 @@ function spawnEnemy() {
   const spawnSide = Math.random() < 0.5 ? 'left' : 'right';
   const enemy = {
     x: spawnSide === 'left' ? 0 : canvas.width,
-    y: groundLevel - 40,
+    y: player1.groundLevel - 40,
     width: 50,
     height: 40,
     velocityX: spawnSide === 'left' ? 2 : -2,
@@ -168,7 +177,7 @@ function spawnStrongEnemy() {
   const spawnSide = Math.random() < 0.4 ? 'left' : 'right';
   const enemy = {
     x: spawnSide === 'left' ? 0 : canvas.width,
-    y: groundLevel - 40,
+    y: player1.groundLevel - 40,
     width: 55,
     height: 45,
     velocityX: spawnSide === 'left' ? 2 : -3,
@@ -181,7 +190,7 @@ function spawnStrongerEnemy() {
   const spawnSide = Math.random() < 0.2 ? 'left' : 'right';
   const enemy = {
     x: spawnSide === 'left' ? 0 : canvas.width,
-    y: groundLevel - 40,
+    y: player1.groundLevel - 40,
     width: 60,
     height: 50,
     velocityX: spawnSide === 'left' ? 2 : -4,
@@ -205,7 +214,7 @@ function removeEnemy(enemy) {
 // Funktion zur Anzeige des Game Over-Bildschirms
 
 function gameOver() {
-  alert('Game Over! Score: ' + score); // Zeige den endgültigen Score an
+  alert('Game Over! Score: ' + player1.score); // Zeige den endgültigen Score an
   clearInterval(enemySpawner); // Stoppe das Spawnen neuer Gegner
   resetGame(); // Setze das Spiel zurück
 }
@@ -215,16 +224,16 @@ function gameOver() {
 function resetGame() {
   // Setze Spielerposition und Parameter zurück
 
-  player.x = 100;
-  player.y = groundLevel - 90;
-  player.velocityX = 0;
-  player.velocityY = 0;
-  player.lives = 30;
-  player.isJumping = false;
-  player.jumpCount = 0;
-  player.facingRight = true;
+  player1.x = 100;
+  player1.y = player1.groundLevel - 90;
+  player1.velocityX = 0;
+  player1.velocityY = 0;
+  player1.lives = 30;
+  player1.isJumping = false;
+  player1.jumpCount = 0;
+  player1.facingRight = true;
 
-  score = 0; // Setze den Score zurück
+  player1.score = 0; // Setze den Score zurück
 
   // Entferne alle Gegner
   enemies = [];
@@ -250,32 +259,39 @@ const keys = {
 document.addEventListener('keydown', (event) => {
   console.log(`Key pressed: ${event.code}`);
   if (event.code === 'KeyA') {
-    player.x -= 20
-    player.facingRight = false;
+    player1.x -= 20
+    player1.facingRight = false;
   } if (event.code === 'KeyD') {
-    player.x += 20
-    player.facingRight = true;
+    player1.x += 20
+    player1.facingRight = true;
   }
   if (event.code === 'Space') {
-    player.velocityY = player.jumpPower;
-    player.isJumping = true;
-    player.jumpCount++;
+    player1.velocityY = player1.jumpPower;
+    player1.isJumping = true;
+    player1.jumpCount++;
   }
 });
+
+document.addEventListener('keyup', (event) => {
+  if ((event.code === "KeyA")) {
+    keys.a = false;
+
+  }
+})
 
 /* document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') {
     keys.left = true;
-    player.facingRight = false;
+    player1.facingRight = false;
   }
   if (e.key === 'ArrowRight') {
     keys.right = true;
-    player.facingRight = true;
+    player1.facingRight = true;
   }
-  if ((e.key === 'ArrowUp' || e.key === 'Space') && player.jumpCount < player.maxJumps) {
-    player.velocityY = player.jumpPower;
-    player.isJumping = true;
-    player.jumpCount++;
+  if ((e.key === 'ArrowUp' || e.key === 'Space') && player1.jumpCount < player1.maxJumps) {
+    player1.velocityY = player1.jumpPower;
+    player1.isJumping = true;
+    player1.jumpCount++;
   }
 });
 
@@ -285,11 +301,11 @@ document.addEventListener('keyup', (e) => {
 }); */
 
 function update() {
-  player.velocityX = 0;
-  if (keys.a) player.velocityX = -player.speed;
-  if (keys.d) player.velocityX = player.speed;
+  player1.velocityX = 0;
+  if (keys.a) player1.velocityX = -player1.speed;
+  if (keys.d) player1.velocityX = player1.speed;
 
-  player.update();
+  player1.update();
 
   enemies.forEach((enemy) => {
     enemy.x += enemy.velocityX;
@@ -298,7 +314,7 @@ function update() {
       removeEnemy(enemy);
     }
 
-    player.checkCollisionWithEnemy(enemy);
+    player1.checkCollisionWithEnemy(enemy);
   });
 }
 
@@ -320,16 +336,16 @@ function draw() {
     ctx.drawImage(enemy.image, enemy.x, enemy.y, enemy.width, enemy.height);
   });
 
-  player.draw();
+  player1.draw();
 
   // ----------------------------------- Lebenszähler ----------------------------------------
   ctx.fillStyle = 'black';
   ctx.font = '40px Arial';
   ctx.textAlign = 'center'; // Set the text alignment to center
-  ctx.fillText('Leben: ' + player.lives, canvas.width / 2, 40); // Draw the text at the center of the canvas
+  ctx.fillText('Leben: ' + player1.lives, canvas.width / 2, 40); // Draw the text at the center of the canvas
 
   // ---------------------------------- Zeichne den Score ------------------------------------
-  ctx.fillText('Score: ' + score, canvas.width / 2, 90); // Draw the text at the center of the canvas with a gap of 50 pixels
+  ctx.fillText('Score: ' + player1.score, canvas.width / 2, 90); // Draw the text at the center of the canvas with a gap of 50 pixels
 }
 
 function animate() {
@@ -337,3 +353,5 @@ function animate() {
   draw();
   requestAnimationFrame(animate);
 }
+
+export { removeEnemy, gameOver }
