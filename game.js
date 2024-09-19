@@ -3,7 +3,6 @@ import Player from "./Player.js";
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-
 const enemySpawnInterval = 3000; // Zeitintervall (in Millisekunden) für das Spawnen neuer Gegner
 
 
@@ -19,13 +18,15 @@ resizeCanvas(); // Initiale Größenanpassung
 
 
 
-// Bilder laden und überprüfen, ob alle Bilder geladen sind
+// --------------------------------Bilder laden und überprüfen, ob alle Bilder geladen sind-------------------------------------
+
 const backgroundImage = new Image();
 const cloud = new Image();
 
-// Bilder laden und überprüfen, ob alle Bilder geladen sind
+// --------------------------------Bilder laden und überprüfen, ob alle Bilder geladen sind-------------------------------------
+
 let imagesLoaded = 0;
-const totalImages = 7; // Hintergrund, Spieler (rechts, links), Wolke, Gegner usw.
+const totalImages = 8; // Hintergrund, Spieler (rechts, links), Wolke, Gegner usw.
 
 function checkAllImagesLoaded() {
   imagesLoaded++;
@@ -36,15 +37,18 @@ function checkAllImagesLoaded() {
   }
 }
 
-// Hintergrundbild laden
+// --------------------------------Hintergrundbild laden-------------------------------------
+
 backgroundImage.src = 'assets/images/hintergrund.png';
 backgroundImage.onload = checkAllImagesLoaded;
 
-// Wolkenbild laden
+// --------------------------------Wolkenbild laden-------------------------------------
+
 cloud.src = 'assets/images/wolke.png';
 cloud.onload = checkAllImagesLoaded;
 
-// Spielerbilder laden
+// --------------------------------Spielerbilder laden ---------------------------------------
+
 const playerImageRight = new Image();
 const playerImageLeft = new Image();
 
@@ -62,14 +66,18 @@ const enemyImageRight = new Image();
 enemyImage.src = 'assets/images/gumbaBig.png';
 enemyImage.onload = checkAllImagesLoaded;
 
-//---------------------------- strong Enemies -----------------------------------
+enemyImageRight.src = 'assets/images/gumbaBigReversed.png';
+enemyImageRight.onload = checkAllImagesLoaded;
+
+
+//---------------------------- green Enemies -----------------------------------
 
 const enemyImage2 = new Image();
 
 enemyImage2.src = 'assets/images/green.png';
 enemyImage2.onload = checkAllImagesLoaded;
 
-//---------------------------- strong Enemies -----------------------------------
+//---------------------------- red Enemies -----------------------------------
 
 const enemyImage3 = new Image();
 
@@ -80,77 +88,6 @@ enemyImage3.onload = checkAllImagesLoaded;
 
 const player1 = new Player(canvas, playerImageRight, playerImageLeft)
 
-
-
-// -------------------------- Spieler-Objekt ------------------------------------
-
-
-
-/* const player1 = {
-  x: 100,
-  y: groundLevel - 90,
-  width: 60,
-  height: 90,
-  velocityX: 0,
-  velocityY: 0,
-  speed: 5,
-  jumpPower: -10,
-  isJumping: false,
-  jumpCount: 0,
-  maxJumps: 2,
-  facingRight: true,
-  lives: 300, // Anzahl der Leben des Spielers
-
-  draw() {
-    const image = this.facingRight ? player1ImageRight : player1ImageLeft;
-    ctx.drawImage(image, this.x, this.y, this.width, this.height);
-  },
-  update() {
-    this.x += this.velocityX;
-    this.velocityY += gravity;
-    this.y += this.velocityY;
-
-    // Spieler darf nicht unterhalb des neuen Bodenniveaus sein
-    if (this.y + this.height >= groundLevel) {
-      this.y = groundLevel - this.height;
-      this.isJumping = false;
-      this.velocityY = 0;
-      this.jumpCount = 0;
-    }
-
-    // Spieler darf nicht außerhalb des Canvas laufen
-    if (this.x < 0) this.x = 0;
-    if (this.x + this.width > canvas.width) this.x = canvas.width - this.width;
-  },
-  checkCollisionWithEnemy(enemy) {
-    // Prüfe auf Kollision mit einem Gegner
-    if (this.x < enemy.x + enemy.width &&
-      this.x + this.width > enemy.x &&
-      this.y < enemy.y + enemy.height &&
-      this.y + this.height > enemy.y) {
-
-      if (this.y + this.height - this.velocityY <= enemy.y + 10) {
-        // Spieler springt auf den Gegner (von oben)
-        console.log('Gegner besiegt!');
-        this.velocityY = player1.jumpPower;
-        removeEnemy(enemy);
-        score++; // Erhöhe den Score um 1, wenn ein Gegner besiegt wird
-      } else {
-        // Spieler kollidiert seitlich oder unten mit dem Gegner
-        this.lives -= 1;
-        console.log('Spieler getroffen! Leben reduziert.');
-
-        // Gegner umkehren
-        enemy.velocityX = -enemy.velocityX;
-
-        if (this.lives <= 0) {
-          console.log('Game over');
-          gameOver();
-        }
-      }
-    }
-  }
-}; */
 
 // --------------------------- Gegner-Objekte ----------------------------------- 
 
@@ -173,7 +110,7 @@ function spawnEnemy() {
   enemies.push(enemy);
 }
 
-function spawnStrongEnemy() {
+/* function spawnStrongEnemy() {
   const spawnSide = Math.random() < 0.4 ? 'left' : 'right';
   const enemy = {
     x: spawnSide === 'left' ? 0 : canvas.width,
@@ -197,14 +134,14 @@ function spawnStrongerEnemy() {
     image: enemyImage3
   };
   enemies.push(enemy);
-}
+} */
 
 // Startet das kontinuierliche Spawnen der Gegner
 let enemySpawner = setInterval(spawnEnemy, enemySpawnInterval);
 
-let enemySpawner2 = setInterval(spawnStrongEnemy, enemySpawnInterval);
+/* let enemySpawner2 = setInterval(spawnStrongEnemy, enemySpawnInterval);
 
-let enemySpawner3 = setInterval(spawnStrongerEnemy, enemySpawnInterval);
+let enemySpawner3 = setInterval(spawnStrongerEnemy, enemySpawnInterval); */
 
 // Funktion zum Entfernen eines Gegners
 function removeEnemy(enemy) {
@@ -218,7 +155,7 @@ function gameOver() {
   clearInterval(enemySpawner); // Stoppe das Spawnen neuer Gegner
   resetGame(); // Setze das Spiel zurück
 }
-
+ 
 // ------------------------------------- SPIEL-RESET -----------------------------------------------
 
 function resetGame() {
@@ -249,12 +186,12 @@ function resetGame() {
 //  ------------------------------------------- CONTROLS -----------------------------------------------------------//
 
 const keys = {
-  /*   left: false,
-    right: false, */
-  up: false,
+ /*  left: false,
+  right: false,
+  up: false, */
   a: false,
   d: false,
-};
+}; 
 
 document.addEventListener('keydown', (event) => {
   if (event.code === 'KeyA') {
@@ -273,23 +210,39 @@ document.addEventListener('keydown', (event) => {
 });
 
 document.addEventListener('keyup', (event) => {
-  {
-    if ((event.code === "KeyA")) {
-      keys.a = false;
-
-    }
+  if (event.code === "KeyA") {
     keys.a = false; // Set keys.a to false when 'A' is released
-    if (event.code === "KeyD") {
-      keys.d = false;
-
-    }
-    if (event.code === 'KeyD') {
-      keys.d = false; // Set keys.d to false when 'D' is released
-    }
+  }
+  if (event.code === "KeyD") {
+    keys.d = false; // Set keys.d to false when 'D' is released
   }
 });
 
 //---------------------------------------------------------------------
+
+/* document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') {
+    keys.left = true;
+    player1.facingRight = false;
+  }
+  if (e.key === 'ArrowRight') {
+    keys.right = true;
+    player1.facingRight = true;
+  }
+  if ((e.key === 'ArrowUp' || e.key === 'Space') && player1.jumpCount < player1.maxJumps) {
+    player1.velocityY = player1.jumpPower;
+    player1.isJumping = true;
+    player1.jumpCount++;
+  }
+});
+
+document.addEventListener('keyup', (e) => {
+  if (e.key === 'ArrowLeft') keys.left = false;
+  if (e.key === 'ArrowRight') keys.right = false;
+}); */
+
+
+//------------------------------- ALTERNATE CONTROLS -------------------------------------
 
 /* document.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft') {

@@ -73,7 +73,7 @@ export default class Player {
                 if (this.lives <= 0) {
                     console.log('Game over');
                     gameOver();
-                }
+                } 
             }
         }
     }
