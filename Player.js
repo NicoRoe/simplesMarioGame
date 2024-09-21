@@ -19,8 +19,12 @@ export default class Player {
         this.facingRight = true;
         this.lives = 1000; // Anzahl der Leben des Spielers
         this.gravity = 0.5;
+/*         this.playerImageRight = playerImageRight;
+        this.playerImageLeft = playerImageLeft; */
+        
         this.playerImageRight = playerImageRight;
-        this.playerImageLeft = playerImageLeft;
+        this.playerImageLeft = playerImageLeft; 
+
         this.score = 0;
 
     }

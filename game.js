@@ -52,10 +52,10 @@ cloud.onload = checkAllImagesLoaded;
 const playerImageRight = new Image();
 const playerImageLeft = new Image();
 
-playerImageRight.src = 'assets/images/marioBig.png';
+playerImageRight.src = 'assets/images/alexxKiddBigTransp.png';
 playerImageRight.onload = checkAllImagesLoaded;
 
-playerImageLeft.src = 'assets/images/reverseMarioBig.png';
+playerImageLeft.src = 'assets/images/alexxKiddBigTranspReversed.png';
 playerImageLeft.onload = checkAllImagesLoaded;
 
 // ------------------------- Gegnerbild laden -----------------------------------
@@ -110,7 +110,7 @@ function spawnEnemy() {
   enemies.push(enemy);
 }
 
-/* function spawnStrongEnemy() {
+function spawnStrongEnemy() {
   const spawnSide = Math.random() < 0.4 ? 'left' : 'right';
   const enemy = {
     x: spawnSide === 'left' ? 0 : canvas.width,
@@ -134,19 +134,79 @@ function spawnStrongerEnemy() {
     image: enemyImage3
   };
   enemies.push(enemy);
-} */
+}
 
 // Startet das kontinuierliche Spawnen der Gegner
 let enemySpawner = setInterval(spawnEnemy, enemySpawnInterval);
 
-/* let enemySpawner2 = setInterval(spawnStrongEnemy, enemySpawnInterval);
+let enemySpawner2 = setInterval(spawnStrongEnemy, enemySpawnInterval);
 
-let enemySpawner3 = setInterval(spawnStrongerEnemy, enemySpawnInterval); */
+let enemySpawner3 = setInterval(spawnStrongerEnemy, enemySpawnInterval);
 
 // Funktion zum Entfernen eines Gegners
 function removeEnemy(enemy) {
   enemies.splice(enemies.indexOf(enemy), 1);
 }
+
+//--------------------------PLATTFORM-----------------------
+
+let platforms = [
+  { x: 150, 
+    y: 300, 
+    width: 1000, 
+    height: 100 
+  },
+  // Weitere Plattformen können hier hinzugefügt werden
+];
+
+function drawPlatforms() {
+  platforms.forEach(platform => {
+    context.fillStyle = 'brown'; // Farbe der Plattform
+    context.fillRect(platform.x, platform.y, platform.width, platform.height);
+  });
+}
+
+function checkPlatformCollision(player1) {
+  platforms.forEach(platform => {
+    if (player1.x < platform.x + platform.width &&
+        player1.x + player1.width > platform.x &&
+        player1.y + player1.height <= platform.y &&
+        player1.y + player1.height + player1.velocityY >= platform.y) {
+      // Spieler steht auf der Plattform
+      player1.y = platform.y - player1.height;
+      player1.velocityY = 0; // Stoppe die vertikale Bewegung
+    }
+  });
+}
+
+// Haupt-Zeichenschleife
+function gameLoop() {
+  // Andere Spiel-Logik hier...
+
+  // Zeichne Plattformen
+  drawPlatforms();
+
+  // Überprüfe Kollision mit Plattformen
+  checkPlatformCollision(player1);
+
+  // Andere Spiel-Logik hier...
+
+  // Nächste Iteration der Spielschleife
+  requestAnimationFrame(gameLoop);
+}
+
+// Initialisiere das Spiel
+function init() {
+  // Initialisiere Spieler, Gegner, etc.
+  
+  // Starte die Spielschleife
+  gameLoop();
+}
+
+// Starte das Spiel, wenn das Dokument geladen ist
+window.onload = init;
+
+
 
 // ----------------------------------- GAME-OVER -----------------------------------------------
 
