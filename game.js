@@ -3,17 +3,20 @@ import Player from "./Player.js";
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+canvas.width = window.innerWidth
+canvas.height= window.innerHeight
+
 const enemySpawnInterval = 3000; // Zeitintervall (in Millisekunden) für das Spawnen neuer Gegner
 
 
 // Funktion zum Setzen der Canvas-Größe
-function resizeCanvas() {
+/* function resizeCanvas() {
   canvas.width = window.innerWidth; // Setzt die Breite des Canvas auf die Fensterbreite
   canvas.height = window.innerHeight; // Setzt die Höhe des Canvas auf die Fensterhöhe
-}
+} */
 
-window.addEventListener('resize', resizeCanvas); // Setzt Canvas-Größe bei Größenänderung des Fensters
-resizeCanvas(); // Initiale Größenanpassung
+/* window.addEventListener('resize', resizeCanvas) */; // Setzt Canvas-Größe bei Größenänderung des Fensters
+/* resizeCanvas(); */ // Initiale Größenanpassung
 
 
 
@@ -58,7 +61,22 @@ playerImageRight.onload = checkAllImagesLoaded;
 playerImageLeft.src = 'assets/images/alexxKiddBigTranspReversed.png';
 playerImageLeft.onload = checkAllImagesLoaded;
 
-// ------------------------- Gegnerbild laden -----------------------------------
+
+//---------------------------- red Enemies -----------------------------------
+
+
+
+
+// -------------------------------- PLAYER 1 --------------------------------------
+
+const player1 = new Player(canvas, playerImageRight, playerImageLeft)
+
+// --------------------------- Spawnen neuer Gegner ------------------------------
+
+let enemies = [];
+let greenEnemies = [];
+let redEnemies = [];
+
 
 const enemyImage = new Image();
 const enemyImageRight = new Image();
@@ -68,34 +86,6 @@ enemyImage.onload = checkAllImagesLoaded;
 
 enemyImageRight.src = 'assets/images/gumbaBigReversed.png';
 enemyImageRight.onload = checkAllImagesLoaded;
-
-
-//---------------------------- green Enemies -----------------------------------
-
-const enemyImage2 = new Image();
-
-enemyImage2.src = 'assets/images/green.png';
-enemyImage2.onload = checkAllImagesLoaded;
-
-//---------------------------- red Enemies -----------------------------------
-
-const enemyImage3 = new Image();
-
-enemyImage3.src = 'assets/images/red.png';
-enemyImage3.onload = checkAllImagesLoaded;
-
-// -------------------------------- PLAYER 1 --------------------------------------
-
-const player1 = new Player(canvas, playerImageRight, playerImageLeft)
-
-
-// --------------------------- Gegner-Objekte ----------------------------------- 
-
-let enemies = [];
-let greenEnemies = [];
-let redEnemies = [];
-
-// --------------------------- Spawnen neuer Gegner ------------------------------
 
 function spawnEnemy() {
   const spawnSide = Math.random() < 0.5 ? 'left' : 'right';
@@ -110,8 +100,15 @@ function spawnEnemy() {
   enemies.push(enemy);
 }
 
+const enemyImage2 = new Image();
+
+enemyImage2.src = 'assets/images/green.png';
+enemyImage2.onload = checkAllImagesLoaded;
+
 function spawnStrongEnemy() {
-  const spawnSide = Math.random() < 0.4 ? 'left' : 'right';
+  const spawnSide = Math.random() < 0.4
+    ? 'left'
+    : 'right';
   const enemy = {
     x: spawnSide === 'left' ? 0 : canvas.width,
     y: player1.groundLevel - 40,
@@ -123,14 +120,37 @@ function spawnStrongEnemy() {
   enemies.push(enemy);
 }
 
+const enemyImage4 = new Image();
+
+enemyImage4.src = 'assets/images/giant.png';
+enemyImage4.onload = checkAllImagesLoaded;
+
 function spawnStrongerEnemy() {
   const spawnSide = Math.random() < 0.2 ? 'left' : 'right';
   const enemy = {
     x: spawnSide === 'left' ? 0 : canvas.width,
-    y: player1.groundLevel - 40,
-    width: 60,
-    height: 50,
+    y: player1.groundLevel - 95,
+    width: 120,
+    height: 100,
     velocityX: spawnSide === 'left' ? 2 : -4,
+    image: enemyImage4
+  };
+  enemies.push(enemy);
+}
+
+const enemyImage3 = new Image();
+
+enemyImage3.src = 'assets/images/red.png';
+enemyImage3.onload = checkAllImagesLoaded;
+
+function spawnAirEnemy() {
+  const spawnSide = Math.random() < 0.2 ? 'left' : 'right';
+  const enemy = {
+    x: spawnSide === 'left' ? 0 : canvas.width,
+    y: player1.groundLevel - 400,
+    width: 130,
+    height: 120,
+    velocityX: spawnSide === 'left' ? 7 : -6,
     image: enemyImage3
   };
   enemies.push(enemy);
@@ -143,6 +163,9 @@ let enemySpawner2 = setInterval(spawnStrongEnemy, enemySpawnInterval);
 
 let enemySpawner3 = setInterval(spawnStrongerEnemy, enemySpawnInterval);
 
+let enemySpawner4 = setInterval(spawnAirEnemy, enemySpawnInterval);
+
+
 // Funktion zum Entfernen eines Gegners
 function removeEnemy(enemy) {
   enemies.splice(enemies.indexOf(enemy), 1);
@@ -150,28 +173,29 @@ function removeEnemy(enemy) {
 
 //--------------------------PLATTFORM-----------------------
 
-let platforms = [
-  { x: 150, 
-    y: 300, 
-    width: 1000, 
-    height: 100 
+/* let platforms = [
+  {
+    x: 450,
+    y: 400,
+    width: 600,
+    height: 50
   },
-  // Weitere Plattformen können hier hinzugefügt werden
+
 ];
 
 function drawPlatforms() {
   platforms.forEach(platform => {
-    context.fillStyle = 'brown'; // Farbe der Plattform
-    context.fillRect(platform.x, platform.y, platform.width, platform.height);
+    ctx.fillStyle = 'brown'; // Farbe der Plattform
+    ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
   });
 }
 
 function checkPlatformCollision(player1) {
   platforms.forEach(platform => {
     if (player1.x < platform.x + platform.width &&
-        player1.x + player1.width > platform.x &&
-        player1.y + player1.height <= platform.y &&
-        player1.y + player1.height + player1.velocityY >= platform.y) {
+      player1.x + player1.width > platform.x &&
+      player1.y + player1.height <= platform.y &&
+      player1.y + player1.height + player1.velocityY >= platform.y) {
       // Spieler steht auf der Plattform
       player1.y = platform.y - player1.height;
       player1.velocityY = 0; // Stoppe die vertikale Bewegung
@@ -198,13 +222,13 @@ function gameLoop() {
 // Initialisiere das Spiel
 function init() {
   // Initialisiere Spieler, Gegner, etc.
-  
+
   // Starte die Spielschleife
   gameLoop();
 }
 
 // Starte das Spiel, wenn das Dokument geladen ist
-window.onload = init;
+window.onload = init; */
 
 
 
@@ -215,7 +239,7 @@ function gameOver() {
   clearInterval(enemySpawner); // Stoppe das Spawnen neuer Gegner
   resetGame(); // Setze das Spiel zurück
 }
- 
+
 // ------------------------------------- SPIEL-RESET -----------------------------------------------
 
 function resetGame() {
@@ -246,15 +270,16 @@ function resetGame() {
 //  ------------------------------------------- CONTROLS -----------------------------------------------------------//
 
 const keys = {
- /*  left: false,
-  right: false,
-  up: false, */
-  a: false,
+  /*  left: false,
+   right: false,
+   up: false, */
+  a: false, 
   d: false,
-}; 
+};
 
-document.addEventListener('keydown', (event) => {
+window.addEventListener('keydown', (event) => {
   if (event.code === 'KeyA') {
+    console.log('KeyA down');
     keys.a = true; // Set keys.a to true when 'A' is pressed
     player1.facingRight = false;
   }
@@ -269,8 +294,10 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-document.addEventListener('keyup', (event) => {
+window.addEventListener('keyup', (event) => {
   if (event.code === "KeyA") {
+    console.log('KeyA up');
+    
     keys.a = false; // Set keys.a to false when 'A' is released
   }
   if (event.code === "KeyD") {
@@ -278,55 +305,14 @@ document.addEventListener('keyup', (event) => {
   }
 });
 
-//---------------------------------------------------------------------
 
-/* document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowLeft') {
-    keys.left = true;
-    player1.facingRight = false;
-  }
-  if (e.key === 'ArrowRight') {
-    keys.right = true;
-    player1.facingRight = true;
-  }
-  if ((e.key === 'ArrowUp' || e.key === 'Space') && player1.jumpCount < player1.maxJumps) {
-    player1.velocityY = player1.jumpPower;
-    player1.isJumping = true;
-    player1.jumpCount++;
-  }
-});
-
-document.addEventListener('keyup', (e) => {
-  if (e.key === 'ArrowLeft') keys.left = false;
-  if (e.key === 'ArrowRight') keys.right = false;
-}); */
-
-
-//------------------------------- ALTERNATE CONTROLS -------------------------------------
-
-/* document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowLeft') {
-    keys.left = true;
-    player1.facingRight = false;
-  }
-  if (e.key === 'ArrowRight') {
-    keys.right = true;
-    player1.facingRight = true;
-  }
-  if ((e.key === 'ArrowUp' || e.key === 'Space') && player1.jumpCount < player1.maxJumps) {
-    player1.velocityY = player1.jumpPower;
-    player1.isJumping = true;
-    player1.jumpCount++;
-  }
-});
-
-document.addEventListener('keyup', (e) => {
-  if (e.key === 'ArrowLeft') keys.left = false;
-  if (e.key === 'ArrowRight') keys.right = false;
-}); */
 
 function update() {
   player1.velocityX = 0;
+/*   console.log(`Player1.speed: ${player1.speed}`);
+  console.log(keys); */
+  
+  
   if (keys.a) player1.velocityX = -player1.speed;
   if (keys.d) player1.velocityX = player1.speed;
 
